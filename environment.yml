@@ -1,0 +1,41 @@
+# NEON data pipeline environment
+#
+# Deliberately separate from any JAX/training environment. Nothing in the
+# NEON scripts needs JAX, and keeping ETL apart means a dependency solve
+# here can never disturb the numpy ABI that jaxlib is compiled against.
+#
+# Create as a SHARED env so everyone on the project runs identical versions:
+#
+#   conda env create -f environment.yml \
+#       --prefix /project/cowy-hydro-ml/software/envs/neon
+#   conda activate /project/cowy-hydro-ml/software/envs/neon
+#
+# Or per-user, if the shared prefix is not writable:
+#
+#   conda env create -f environment.yml -n neon
+#
+name: neon
+
+channels:
+  - conda-forge
+
+dependencies:
+  # neonutilities requires >=3.10. 3.11 matches what the jax-sbp env runs,
+  # which keeps behavior comparable across the two.
+  - python=3.11
+  - pip
+
+  # Installed by pip rather than conda so both of us resolve the same
+  # wheels that were verified working, and so pandas 3.x is available.
+  - pip:
+      # Pinned: pandas 3.x removed uppercase resample aliases ('6H' now
+      # raises ValueError; use '6h'). If one of us is on 2.x and the other
+      # on 3.x, the scripts behave differently. Pin it.
+      - pandas==3.0.5
+
+      # Pinned: NEON's own package. Pulls in pyarrow, duckdb, h5py, pyproj,
+      # requests, tqdm and google_crc32c as dependencies, so those need no
+      # separate entry.
+      - neonutilities==2.0.2
+
+      - matplotlib>=3.10
