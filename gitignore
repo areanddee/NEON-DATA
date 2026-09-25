@@ -1,0 +1,176 @@
+# .gitignore for NEON-Data
+#
+# Principle: code, config and documentation are tracked. Data, figures,
+# environments and secrets are not. NEON data is freely re-downloadable
+# from the API, so committing it buys nothing and costs repository size
+# forever (git keeps every version of every binary you ever add).
+#
+# NOTE: git does NOT support trailing comments on a pattern line. A line
+# like "*.csv   # data files" is read as a literal pattern and matches
+# nothing. Every comment here is on its own line for that reason.
+#
+# To track something this file excludes, negate it explicitly, e.g.
+#     !reference/ster_sensor_depths.csv
+# Negation works for extension patterns but NOT for files inside an
+# excluded directory: git will not descend into one. That is why the
+# output directories below are written as "out/*" rather than "out/".
+#
+# To find out why a path is being ignored:
+#     git check-ignore -v <path>
+
+
+# ---------------------------------------------------------------------
+# Secrets. Keep this section first and never relax it.
+# ---------------------------------------------------------------------
+.env
+.env.*
+.neon_token
+# neon_token_source.py is the pattern NEON's own tutorial suggests
+neon_token_source.py
+*.pem
+*.key
+credentials
+credentials.*
+
+
+# ---------------------------------------------------------------------
+# NEON downloads: portal zips, monthly directories, stacked output
+# ---------------------------------------------------------------------
+# monthly dirs, e.g. NEON.D10.STER.DP1.00041.001.2024-01.basic...
+NEON.D*/
+# portal bundle dirs, e.g. NEON_temp-soil/
+NEON_*-*/
+# neonutilities download and stacking targets
+filesToStack*/
+stackedFiles/
+*.manifest.*.json
+# supporting docs (which are actually zip archives despite the extension)
+NEON.DOC.*.pdf
+NEON.QSG.*.pdf
+
+
+# ---------------------------------------------------------------------
+# Data files of any kind
+# ---------------------------------------------------------------------
+*.csv
+*.tsv
+*.parquet
+*.feather
+*.arrow
+*.h5
+*.hdf5
+*.nc
+*.nc4
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.gz
+*.bz2
+*.7z
+# NEON EML metadata files
+*.xml
+*.xlsx
+*.xls
+
+
+# ---------------------------------------------------------------------
+# Figures and generated output
+# ---------------------------------------------------------------------
+out/*
+!out/.gitkeep
+output/*
+!output/.gitkeep
+figures/*
+!figures/.gitkeep
+scratch/
+tmp/
+*.png
+*.jpg
+*.jpeg
+*.svg
+*.pdf
+*.eps
+*.gif
+*.mp4
+
+
+# ---------------------------------------------------------------------
+# Models, checkpoints, experiment tracking
+# ---------------------------------------------------------------------
+*.pt
+*.pth
+*.ckpt
+*.pkl
+*.pickle
+*.joblib
+*.npy
+*.npz
+*.onnx
+*.safetensors
+checkpoints/
+runs/
+wandb/
+mlruns/
+lightning_logs/
+
+
+# ---------------------------------------------------------------------
+# Python
+# ---------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.ipynb_checkpoints/
+
+
+# ---------------------------------------------------------------------
+# Environments. The recipe (environment.yml) is tracked; the built
+# environment never is.
+# ---------------------------------------------------------------------
+.venv/
+venv/
+env/
+envs/
+.conda/
+conda-pkgs/
+
+
+# ---------------------------------------------------------------------
+# HPC / Slurm job artifacts
+# ---------------------------------------------------------------------
+slurm-*.out
+slurm-*.err
+*.o[0-9]*
+*.e[0-9]*
+core.[0-9]*
+
+
+# ---------------------------------------------------------------------
+# Editors and operating systems
+# ---------------------------------------------------------------------
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.\#*
+\#*\#
